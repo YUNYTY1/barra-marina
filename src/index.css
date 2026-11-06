@@ -1,0 +1,53 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-cream font-sans text-deep antialiased; }
+  section[id] { scroll-margin-top: 4rem; }
+  :focus-visible { @apply outline outline-2 outline-offset-2 outline-coral; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+  }
+}
+
+@layer components {
+  .h-section { @apply font-heading text-[clamp(2.25rem,5.2vw,4.25rem)] font-extrabold uppercase leading-[0.92] tracking-[-0.035em]; }
+  .eyebrow { @apply font-heading text-[11px] font-bold uppercase tracking-[0.28em]; }
+  .container-x { @apply mx-auto w-full max-w-[1280px] px-6 lg:px-10; }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Animación de entrada al hacer scroll (componente Reveal) */
+  .reveal {
+    opacity: 0;
+    transform: translate3d(0, 28px, 0);
+    transition: opacity .8s cubic-bezier(.22, 1, .36, 1), transform .8s cubic-bezier(.22, 1, .36, 1);
+    will-change: opacity, transform;
+  }
+  .reveal[data-from='left'] { transform: translate3d(-36px, 0, 0); }
+  .reveal[data-from='right'] { transform: translate3d(36px, 0, 0); }
+  .reveal[data-from='zoom'] { transform: scale(0.95); }
+
+  /* En celular: solo movimiento vertical (evita scroll horizontal) */
+  @media (max-width: 767px) {
+    .reveal { transform: translate3d(0, 20px, 0); }
+    .reveal[data-from='left'], .reveal[data-from='right'] { transform: translate3d(0, 20px, 0); }
+    .reveal[data-from='zoom'] { transform: scale(0.97); }
+  }
+
+  .reveal.is-visible { opacity: 1; transform: none; will-change: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .reveal[data-from] { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* Cambio de reseña */
+  @keyframes review-in {
+    from { opacity: 0; transform: translate3d(0, 14px, 0); }
+    to { opacity: 1; transform: none; }
+  }
+  .animate-review-in { animation: review-in .5s cubic-bezier(.22, 1, .36, 1) both; }
+}
